@@ -5,7 +5,7 @@ def strip_spaces(in_str):
     return in_str.strip()
 
 def transform_salary(in_str):
-    return 1 if in_str.strip() == '>50K' else 0
+    return 1 if in_str.strip('.') == ' >50K' else 0
 
 
 def load_adult(path):
@@ -20,7 +20,7 @@ def load_adult(path):
                                                                                        "race": strip_spaces, 
                                                                                        "sex": strip_spaces, 
                                                                                        "native-country": strip_spaces, 
-                                                                                       "salary": strip_spaces})
+                                                                                       "salary": transform_salary})
     original_size = len(dataset)
     # make sure all values belong to their respective discrete set
     valid_workclass = ["Private", "Self-emp-not-inc", "Self-emp-inc", "Federal-gov", 
@@ -63,7 +63,6 @@ def load_adult(path):
 
     # transform 'sex' and 'salary' columns to binary
     dataset['sex'] = dataset['sex'].map({'Female': 1, 'Male': 0}).astype(int)
-    dataset['salary'] = dataset['salary'].map({'>50K': 1, '<=50K': 0}).astype(int)
     return dataset, size/original_size
 
 def load_german(path):
