@@ -73,12 +73,14 @@ def load_german(path):
     dataset['credit_status'] = dataset['credit_status'].map({1: 0, 2: 1}).astype(int)
     return dataset
 
-def encode(dataset, encoders={}):
+def encode(dataset_raw, encoders={}):
+    dataset = dataset_raw.copy()
     for col, encoder in encoders.items():
         dataset[col] = encoder.fit_transform(dataset[col])
-    # return dataset
+    return dataset
 
-def decode(dataset, encoders={}):
+def decode(dataset_encoded, encoders={}):
+    dataset = dataset_encoded.copy()
     for col, encoder in encoders.items():
         dataset[col] = encoder.inverse_transform(dataset[col])
-    # return dataset
+    return dataset
