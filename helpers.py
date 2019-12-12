@@ -67,7 +67,7 @@ def load_adult(path):
 
 def load_german(path):
     dataset = pd.read_csv(path, header=None, delimiter=r'\s+')
-    dataset = dataset.rename(columns={9: 'Age', 24: 'credit_status'})
+    dataset = dataset.rename(columns={12: 'Age', 20: 'credit_status'})
 
     # transform 'credit_status' column to binary
     dataset['credit_status'] = dataset['credit_status'].map({1: 0, 2: 1}).astype(int)

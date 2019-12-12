@@ -49,7 +49,6 @@ class CustomLogisticRegression(BaseEstimator):
         return np.round(self.__logistic_function(features))
 
     def get_params(self, deep=True):
-        # suppose this estimator has parameters "alpha" and "recursive"
         return {"learning_rate": self.learning_rate, "condition": self.condition, "itr": self.itr}
 
     def set_params(self, **parameters):
