@@ -60,17 +60,12 @@ def load_adult(path):
     rows_to_keep = [val in valid_native_country for val in dataset["native-country"]]
     dataset = dataset[rows_to_keep]
     size = len(dataset)
-
-    # transform 'sex' and 'salary' columns to binary
-    dataset['sex'] = dataset['sex'].map({'Female': 1, 'Male': 0}).astype(int)
     return dataset, size/original_size
 
 def load_german(path):
     dataset = pd.read_csv(path, header=None, delimiter=r'\s+')
-    dataset = dataset.rename(columns={12: 'Age', 20: 'credit_status'})
-
-    # transform 'credit_status' column to binary
-    dataset['credit_status'] = dataset['credit_status'].map({1: 0, 2: 1}).astype(int)
+    # transform output column to binary
+    dataset.iloc[:, -1] = dataset.iloc[:, -1].map({1: 0, 2: 1}).astype(int)
     return dataset
 
 def encode(dataset_raw, encoders={}):
@@ -84,3 +79,45 @@ def decode(dataset_encoded, encoders={}):
     for col, encoder in encoders.items():
         dataset[col] = encoder.inverse_transform(dataset[col])
     return dataset
+
+def encode_adult(dataset_raw, dataset_raw_test):
+    dataset = dataset_raw.copy()
+    dataset_test = dataset_raw_test.copy()
+    # transform 'sex' column to binary
+    dataset['sex'] = dataset['sex'].map({'Female': 1, 'Male': 0}).astype(int)
+    dataset_test['sex'] = dataset_test['sex'].map({'Female': 1, 'Male': 0}).astype(int)
+    # 2-Quantile quantization
+    discrete_cols = ['fnlwgt', 'education-num', 'capital-gain', 'capital-loss', 'hours-per-week']
+    for i, col in enumerate(discrete_cols):
+        median = dataset[col].median()
+        # training set
+        dataset.loc[dataset[col] < median, col] = 0
+        dataset.loc[dataset[col] >= median, col] = 1
+
+        # test set
+        dataset_test.loc[dataset_test[col] < median, col] = 0
+        dataset_test.loc[dataset_test[col] >= median, col] = 1
+    return dataset, dataset_test
+
+def encode_german(dataset_raw, dataset_raw_test):
+    dataset = dataset_raw.copy()
+    dataset_test = dataset_raw_test.copy()
+    # transform 'Age' and column to binary
+    age_index = 12
+    dataset.loc[dataset[age_index] <= 25, age_index] = 1
+    dataset.loc[dataset[age_index] > 25, age_index] = 0
+    
+    dataset_test.loc[dataset_test[age_index] <= 25, age_index] = 1
+    dataset_test.loc[dataset_test[age_index] > 25, age_index] = 0
+    # 2-Quantile quantization
+    discrete_cols = [1, 4, 7, 10, 12, 15, 17]
+    for i, col in enumerate(discrete_cols):
+        median = dataset[col].median()
+        # training set
+        dataset.loc[dataset[col] < median, col] = 0
+        dataset.loc[dataset[col] >= median, col] = 1
+
+        # test set
+        dataset_test.loc[dataset_test[col] < median, col] = 0
+        dataset_test.loc[dataset_test[col] >= median, col] = 1
+    return dataset, dataset_test
