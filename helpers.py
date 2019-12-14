@@ -106,11 +106,11 @@ def encode_german(dataset_raw, dataset_raw_test):
     age_index = 12
     dataset.loc[dataset[age_index] <= 25, age_index] = 1
     dataset.loc[dataset[age_index] > 25, age_index] = 0
-    
+
     dataset_test.loc[dataset_test[age_index] <= 25, age_index] = 1
     dataset_test.loc[dataset_test[age_index] > 25, age_index] = 0
     # 2-Quantile quantization
-    discrete_cols = [1, 4, 7, 10, 12, 15, 17]
+    discrete_cols = [1, 4, 7, 10, 15, 17]
     for i, col in enumerate(discrete_cols):
         median = dataset[col].median()
         # training set
@@ -130,7 +130,7 @@ def encode_german_all(dataset_raw):
     dataset.loc[dataset[age_index] <= 25, age_index] = 1
     dataset.loc[dataset[age_index] > 25, age_index] = 0
     # 2-Quantile quantization
-    discrete_cols = [1, 4, 7, 10, 12, 15, 17]
+    discrete_cols = [1, 4, 7, 10, 15, 17]
     for i, col in enumerate(discrete_cols):
         median = dataset[col].median()
         # training set
