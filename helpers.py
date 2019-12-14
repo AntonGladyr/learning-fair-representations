@@ -87,7 +87,7 @@ def encode_adult(dataset_raw, dataset_raw_test):
     dataset['sex'] = dataset['sex'].map({'Female': 1, 'Male': 0}).astype(int)
     dataset_test['sex'] = dataset_test['sex'].map({'Female': 1, 'Male': 0}).astype(int)
     # 2-Quantile quantization
-    discrete_cols = ['fnlwgt', 'education-num', 'capital-gain', 'capital-loss', 'hours-per-week']
+    discrete_cols = ['age', 'fnlwgt', 'education-num', 'capital-gain', 'capital-loss', 'hours-per-week']
     for i, col in enumerate(discrete_cols):
         median = dataset[col].median()
         # training set
@@ -121,3 +121,19 @@ def encode_german(dataset_raw, dataset_raw_test):
         dataset_test.loc[dataset_test[col] < median, col] = 0
         dataset_test.loc[dataset_test[col] >= median, col] = 1
     return dataset, dataset_test
+
+
+def encode_german_all(dataset_raw):
+    dataset = dataset_raw.copy()
+    # transform 'Age' and column to binary
+    age_index = 12
+    dataset.loc[dataset[age_index] <= 25, age_index] = 1
+    dataset.loc[dataset[age_index] > 25, age_index] = 0
+    # 2-Quantile quantization
+    discrete_cols = [1, 4, 7, 10, 12, 15, 17]
+    for i, col in enumerate(discrete_cols):
+        median = dataset[col].median()
+        # training set
+        dataset.loc[dataset[col] < median, col] = 0
+        dataset.loc[dataset[col] >= median, col] = 1
+    return dataset
