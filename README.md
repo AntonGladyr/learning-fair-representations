@@ -11,3 +11,5 @@ is to reproduce the results of a published machine learning paper.
 * supplementary: <http://proceedings.mlr.press/v28/zemel13-supp.pdf>
 
 ## Results
+
+See _Learn_Fair_Representation.pdf_, _main-notebook.ipynb_, and _dataset-notebook.ipynb_ .
